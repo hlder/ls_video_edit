@@ -51,7 +51,6 @@ public class TestView extends View {
 
     private int hotSize=100;//热点区域的大小
 
-    private int touchStatus=0;//0未按下，1一个手指按下
     private float touchX=100;//touch的x轴
     private float touchY=100;//touch的y轴的位置
 
@@ -118,7 +117,6 @@ public class TestView extends View {
         int action=event.getAction();
 
         if(action==MotionEvent.ACTION_DOWN){
-            touchStatus=1;
             selectedItem=null;
             boolean isSelected=false;
             for(int i=list.size()-1;i>=0;i--){
@@ -148,9 +146,7 @@ public class TestView extends View {
                 }
             }
         }else if(action==MotionEvent.ACTION_UP){
-            touchStatus=0;
         }else if(action==MotionEvent.ACTION_CANCEL){
-            touchStatus=0;
         }else if(MotionEvent.ACTION_MOVE==action){
             if(selectedItem!=null){
                 if(selectedItem.getType()==0){//移动
@@ -168,16 +164,15 @@ public class TestView extends View {
                     float temHeight=rectF.bottom-rectF.top;
 
                     float temx=touchX-rectF.left;
-                    float temy=touchY-rectF.top;
-                    if(temy>temx){
-                        rectF.right=rectF.left+temy*temWidth/temHeight;
-                        rectF.bottom=rectF.top+temy;
-                    }else{
+
+                    float temRight=rectF.left+temx;
+                    float temBottom=rectF.top+temx*temHeight/temWidth;
+                    if(temRight>(rectF.left+hotSize*2)&&temBottom>(rectF.top+hotSize*2)){
                         rectF.right=rectF.left+temx;
                         rectF.bottom=rectF.top+temx*temHeight/temWidth;
+                        invalidate();
                     }
 
-                    invalidate();
                 }
             }
         }

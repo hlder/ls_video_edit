@@ -9,6 +9,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<TestView>(R.id.mTestView).setResBitmap(BitmapFactory.decodeResource(resources,R.mipmap.icon_test))
+        findViewById<LsVideoEditer>(R.id.mTestView).setResBitmap(BitmapFactory.decodeResource(resources,R.mipmap.icon_test))
     }
 }

@@ -5,11 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+<!--    xmlns:myapp="http://schemas.android.com/apk/res/com.example.myapplication"-->
 
-    <com.example.myapplication.TestView
+    <com.example.myapplication.LsVideoEditer
         android:id="@+id/mTestView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:lefTopIcon="@mipmap/ic_launcher"
+
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

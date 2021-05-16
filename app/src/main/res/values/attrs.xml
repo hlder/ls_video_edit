@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="lsVideoEditer">
+        <attr name="leftTopIconWidth" format="dimension" />
+        <attr name="leftTopIconHeight" format="dimension" />
+
+        <attr name="leftBottomIconWidth" format="dimension" />
+        <attr name="leftBottomIconHeight" format="dimension" />
+
+        <attr name="rightTopIconWidth" format="dimension" />
+        <attr name="rightTopIconHeight" format="dimension" />
+
+        <attr name="rightBottomIconWidth" format="dimension" />
+        <attr name="rightBottomIconHeight" format="dimension" />
+
+
+        <attr name="leftTopIcon" format="reference"/>
+        <attr name="leftBottomIcon" format="reference"/>
+        <attr name="rightTopIcon" format="reference"/>
+        <attr name="rightBottomIcon" format="reference"/>
+
+    </declare-styleable>
+</resources>

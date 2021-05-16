@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -20,23 +21,63 @@ import java.util.List;
 import static android.graphics.Matrix.ScaleToFit.CENTER;
 import static android.graphics.Matrix.ScaleToFit.FILL;
 
-public class TestView extends View {
-    public TestView(Context context) {
+public class LsVideoEditer extends View {
+    public LsVideoEditer(Context context) {
         super(context);
         init();
     }
 
-    public TestView(Context context, @Nullable AttributeSet attrs) {
+    public LsVideoEditer(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
+
+
         init();
     }
 
-    public TestView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public LsVideoEditer(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
+    private void initAttrs(Context context, AttributeSet attrs){
+        TypedArray typedArray=context.obtainStyledAttributes(attrs,R.styleable.lsVideoEditer);
+
+        float leftTopIconWidth=typedArray.getDimension(R.styleable.lsVideoEditer_leftTopIconWidth,20);
+        float leftTopIconHeight=typedArray.getDimension(R.styleable.lsVideoEditer_leftTopIconHeight,20);
+
+        float leftBottomIconWidth=typedArray.getDimension(R.styleable.lsVideoEditer_leftBottomIconWidth,20);
+        float leftBottomIconHeight=typedArray.getDimension(R.styleable.lsVideoEditer_leftBottomIconHeight,20);
+
+        float rightTopIconWidth=typedArray.getDimension(R.styleable.lsVideoEditer_rightTopIconWidth,20);
+        float rightTopIconHeight=typedArray.getDimension(R.styleable.lsVideoEditer_rightTopIconHeight,20);
+
+        float rightBottomIconWidth=typedArray.getDimension(R.styleable.lsVideoEditer_rightBottomIconWidth,20);
+        float rightBottomIconHeight=typedArray.getDimension(R.styleable.lsVideoEditer_rightBottomIconHeight,20);
+
+
+        int leftTopIconIconId=typedArray.getResourceId(R.styleable.lsVideoEditer_leftTopIcon,0);
+
+        int leftBottomIconId=typedArray.getResourceId(R.styleable.lsVideoEditer_leftBottomIcon,0);
+
+        int rightTopIconId=typedArray.getResourceId(R.styleable.lsVideoEditer_rightTopIcon,0);
+
+        int rightBottomIconId=typedArray.getResourceId(R.styleable.lsVideoEditer_rightBottomIcon,0);
+
+
+        if(leftTopIconIconId!=0){
+            leftTopIcon=BitmapFactory.decodeResource(getResources(),leftTopIconIconId);
+        }
+        if(leftBottomIconId!=0){
+            leftBottomIcon=BitmapFactory.decodeResource(getResources(),leftBottomIconId);
+        }
+
+    }
+
+
     private void init(){
+
+
         resBitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.icon_test);
 
         list.add(Item.createItem(0,0,resBitmap.getWidth(),resBitmap.getHeight()));
@@ -45,15 +86,17 @@ public class TestView extends View {
 
     private Bitmap resBitmap;//可以拖动的bitmap
 
-    public void setResBitmap(Bitmap resBitmap) {
-        this.resBitmap = resBitmap;
-    }
 
-    private int hotSize=100;//热点区域的大小
+    private final int hotSize=100;//热点区域的大小
 
     private float touchX=100;//touch的x轴
     private float touchY=100;//touch的y轴的位置
 
+
+    private Bitmap leftTopIcon;//左上角的图标
+    private Bitmap rightTopIcon;//右上角的图标
+    private Bitmap leftBottomIcon;//左下角的图标
+    private Bitmap rightBottomIcon;//右下角的图标
 
 
     private int vWidth;
@@ -61,15 +104,17 @@ public class TestView extends View {
 
 
 
+    //存放bitmap的信息
     private List<Item> list=new ArrayList<>();
+
+
+
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if(vWidth==0) vWidth=getWidth();
         if(vHeight==0) vHeight=getHeight();
-
-
 
         Paint paint=new Paint();
         paint.setTextSize(50);
@@ -105,8 +150,8 @@ public class TestView extends View {
 
 
 
-
-    Item selectedItem;
+    //手指选中的item
+    private Item selectedItem;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -180,6 +225,47 @@ public class TestView extends View {
         return true;
     }
 
+
+
+
+
+
+
+    public void setRightTopIcon(int rightTopIcon) {
+        this.rightTopIcon=BitmapFactory.decodeResource(getResources(),rightTopIcon);
+    }
+
+    public void setRightTopIcon(Bitmap rightTopIcon) {
+        this.rightTopIcon = rightTopIcon;
+    }
+
+    public void setRightBottomIcon(int rightBottomIcon) {
+        this.rightBottomIcon = BitmapFactory.decodeResource(getResources(),rightBottomIcon);
+    }
+
+    public void setRightBottomIcon(Bitmap rightBottomIcon) {
+        this.rightBottomIcon = rightBottomIcon;
+    }
+
+    public void setLeftTopIcon(int leftTopIcon) {
+        this.leftTopIcon = BitmapFactory.decodeResource(getResources(),leftTopIcon);
+    }
+
+    public void setLeftTopIcon(Bitmap leftTopIcon) {
+        this.leftTopIcon = leftTopIcon;
+    }
+
+    public void setLeftBottomIcon(int leftBottomIcon) {
+        this.leftBottomIcon = BitmapFactory.decodeResource(getResources(),leftBottomIcon);
+    }
+
+    public void setLeftBottomIcon(Bitmap leftBottomIcon) {
+        this.leftBottomIcon = leftBottomIcon;
+    }
+
+    public void setResBitmap(Bitmap resBitmap) {
+        this.resBitmap = resBitmap;
+    }
 
 
 

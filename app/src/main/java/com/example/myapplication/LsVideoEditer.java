@@ -16,13 +16,16 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import static android.graphics.Matrix.ScaleToFit.CENTER;
-import static android.graphics.Matrix.ScaleToFit.FILL;
-
+/**
+ * 自定义编辑view，可以自由添加，缩放item，翻转，拖动等操作
+ * hld
+ */
 public class LsVideoEditer extends View {
     public LsVideoEditer(Context context) {
         super(context);
@@ -107,10 +110,8 @@ public class LsVideoEditer extends View {
 
     //初始化
     private void init(){
-        resBitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.icon_test);
+//        resBitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.icon_test);
 
-        list.add(Item.createItem(0,0,resBitmap.getWidth(),resBitmap.getHeight()));
-        list.add(Item.createItem(200,200,200+resBitmap.getWidth(),200+resBitmap.getHeight()));
     }
 
 
@@ -137,7 +138,7 @@ public class LsVideoEditer extends View {
     private int vHeight;
 
     //存放bitmap的信息
-    private List<Item> list=new ArrayList<>();
+    private List<Item> list=new LinkedList<>();
 
 
     @Override
@@ -151,6 +152,20 @@ public class LsVideoEditer extends View {
 
 
         if(resBitmap!=null){
+
+            if(list.size()<=0){
+                int centX=vWidth/2;
+                int centY=vHeight/2;
+
+                int resWidth=resBitmap.getWidth();
+                int resHeight=resBitmap.getHeight();
+
+                int iw=vWidth/2;
+                int ih=iw*resHeight/resWidth;
+                list.add(Item.createItem(centX-iw/2,centY-ih/2,centX+iw/2,centY+ih/2));
+            }
+
+
             for(Item item:list){
                 Matrix matrix = new Matrix();
 
@@ -160,13 +175,19 @@ public class LsVideoEditer extends View {
                 float blX=tw/resBitmap.getWidth();
                 float blY=th/resBitmap.getHeight();
 
+
                 if(item.isFlip()){
-                    matrix.postScale(-1,1,resBitmap.getWidth()/2,resBitmap.getHeight()/2);
+                    matrix.postScale(-blX,blY,resBitmap.getWidth()/2,resBitmap.getHeight()/2);
                 }else{
-                    matrix.postScale(blX,blY);
+                    matrix.postScale(blX,blY,resBitmap.getWidth()/2,resBitmap.getHeight()/2);
                 }
 
-                matrix.postTranslate(item.rectF.left,item.rectF.top);
+                float offsetLeft=(tw-resBitmap.getWidth())/2;//缩放导致的x轴的偏移量
+                float offsetTop=(th-resBitmap.getHeight())/2;//缩放导致的y轴的偏移量
+
+                matrix.postTranslate(item.rectF.left+offsetLeft,item.rectF.top+offsetTop);
+
+
                 canvas.drawBitmap(resBitmap,matrix,paint);
 
                 drawIcon(canvas,leftTopIcon,paint,item.rectF.left,item.rectF.top,leftTopIconWidth,leftTopIconHeight);
@@ -249,7 +270,8 @@ public class LsVideoEditer extends View {
             }
         }else if(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL){//离手
             if(Math.abs(touchDownX-touchX)<clickGestureSize&&Math.abs(touchDownY-touchY)<clickGestureSize){//点击手势判断成功
-                for(Item item:list){//循环便利，是否有选中的item
+                for(int i=list.size()-1;i>=0;i--){//循环便利，是否有选中的item
+                    Item item=list.get(i);
                     if(item.isSelected()){//选中了
                         int type=item.getType();
                         if(type==2){//点击了翻转
@@ -299,12 +321,40 @@ public class LsVideoEditer extends View {
     //点击了右上角删除
     private void onItemDelteLick(Item item){
         Log.d("dddd","点击了删除");
+        if(list.size()<=1){//最后一个不能删除
+            Toast.makeText(getContext(),"最后一个啦~",Toast.LENGTH_SHORT).show();
+        }else{
+            list.remove(item);
+            invalidate();
+        }
     }
     ///点击了左下角翻转
     private void onItemFlipClick(Item item){
         Log.d("dddd","点击了翻转");
+        item.setFlip(!item.isFlip());
+        invalidate();
     }
 
+
+    public void newItem(){
+        if(resBitmap==null){
+            return;
+        }
+        int nowCount=count();
+        float itemWidth=getWidth()/3;
+        float itemHeight=itemWidth*resBitmap.getHeight()/resBitmap.getWidth();
+        float left=(nowCount-1)%3*itemWidth;
+        float top=((nowCount-1)/3)*itemHeight;
+        list.add(Item.createItem(left,top,left+itemWidth,top+itemHeight));
+//        list.add(Item.createItem(0,0,itemWidth,itemHeight));
+
+        invalidate();
+
+
+    }
+    public int count(){
+        return list.size();
+    }
 
 
 
@@ -343,8 +393,28 @@ public class LsVideoEditer extends View {
 
     public void setResBitmap(Bitmap resBitmap) {
         this.resBitmap = resBitmap;
+        chanageListItemsSize(resBitmap);
+
+        invalidate();
     }
 
+    ///切换图片后，需要批量修改item的属性
+    private void chanageListItemsSize(Bitmap newBitmap){
+        for(Item item:list){
+            RectF rectf = item.getRectF();
+
+            float scale=newBitmap.getHeight()/(float)newBitmap.getWidth();
+
+            float nw=rectf.right-rectf.left;
+            float nh=nw*scale;
+            Log.d("dddd","======scale:"+scale+"   nw:"+nw+"    nh:"+nh+"     newBitmap.getHeight():"+newBitmap.getHeight()+"     newBitmap.getWidth():"+newBitmap.getWidth());
+            RectF newRectf=new RectF(rectf.left,rectf.top,rectf.left+nw,rectf.top+nh);
+
+            item.setRectF(newRectf);
+
+
+        }
+    }
 
 
     static class Item{

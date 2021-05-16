@@ -7,9 +7,10 @@
     tools:context=".MainActivity">
 
     <com.example.myapplication.LsVideoEditer
-        android:id="@+id/mTestView"
+        android:id="@+id/mLsVideoEditer"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
 
         app:leftTopIcon="@mipmap/icon_move"
         app:leftBottomIcon="@mipmap/icon_move"
@@ -19,20 +20,39 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        android:background="@android:color/holo_red_dark"
-        />
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        android:background="@android:color/holo_red_dark" />
 
 
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="20dp"
-        android:text="测试"/>
+        android:text="替换任务"/>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:text="复制任务"
+        app:layout_constraintTop_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toBottomOf="@+id/button2"
+        app:layout_constraintRight_toLeftOf="@+id/button2"/>
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="编辑人物"
+        app:layout_constraintTop_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toBottomOf="@+id/button2"
+        app:layout_constraintLeft_toRightOf="@+id/button2"/>
 
 </android.support.constraint.ConstraintLayout>

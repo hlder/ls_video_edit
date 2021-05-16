@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-<!--    xmlns:myapp="http://schemas.android.com/apk/res/com.example.myapplication"-->
 
     <com.example.myapplication.LsVideoEditer
         android:id="@+id/mTestView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:lefTopIcon="@mipmap/ic_launcher"
+
+        app:leftTopIcon="@mipmap/icon_move"
+        app:leftBottomIcon="@mipmap/icon_move"
+        app:rightTopIcon="@mipmap/icon_move"
+        app:rightBottomIcon="@mipmap/icon_move"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -19,6 +22,8 @@
         app:layout_constraintBottom_toTopOf="@+id/textView"
         android:background="@android:color/holo_red_dark"
         />
+
+
 
     <TextView
         android:id="@+id/textView"

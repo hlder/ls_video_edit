@@ -9,6 +9,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -26,88 +28,116 @@ public class LsVideoEditer extends View {
         super(context);
         init();
     }
-
     public LsVideoEditer(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-
-
-
+        initAttrs(context,attrs,0);
         init();
     }
-
     public LsVideoEditer(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initAttrs(context,attrs,defStyleAttr);
         init();
     }
+    private final float defSize=50;
 
-    private void initAttrs(Context context, AttributeSet attrs){
-        TypedArray typedArray=context.obtainStyledAttributes(attrs,R.styleable.lsVideoEditer);
+    private float leftTopIconWidth=defSize;
+    private float leftTopIconHeight=defSize;
+    private float leftBottomIconWidth=defSize;
+    private float leftBottomIconHeight=defSize;
+    private float rightTopIconWidth=defSize;
+    private float rightTopIconHeight=defSize;
+    private float rightBottomIconWidth=defSize;
+    private float rightBottomIconHeight=defSize;
 
-        float leftTopIconWidth=typedArray.getDimension(R.styleable.lsVideoEditer_leftTopIconWidth,20);
-        float leftTopIconHeight=typedArray.getDimension(R.styleable.lsVideoEditer_leftTopIconHeight,20);
+    private void initAttrs(Context context, AttributeSet attrs, int defStyleAttr){
+        TypedArray typedArray=context.obtainStyledAttributes(attrs,R.styleable.lsVideoEditer,defStyleAttr,0);
 
-        float leftBottomIconWidth=typedArray.getDimension(R.styleable.lsVideoEditer_leftBottomIconWidth,20);
-        float leftBottomIconHeight=typedArray.getDimension(R.styleable.lsVideoEditer_leftBottomIconHeight,20);
+        leftTopIconWidth=typedArray.getDimension(R.styleable.lsVideoEditer_leftTopIconWidth,defSize);
+        leftTopIconHeight=typedArray.getDimension(R.styleable.lsVideoEditer_leftTopIconHeight,defSize);
 
-        float rightTopIconWidth=typedArray.getDimension(R.styleable.lsVideoEditer_rightTopIconWidth,20);
-        float rightTopIconHeight=typedArray.getDimension(R.styleable.lsVideoEditer_rightTopIconHeight,20);
+        leftBottomIconWidth =typedArray.getDimension(R.styleable.lsVideoEditer_leftBottomIconWidth,defSize);
+        leftBottomIconHeight =typedArray.getDimension(R.styleable.lsVideoEditer_leftBottomIconHeight,defSize);
 
-        float rightBottomIconWidth=typedArray.getDimension(R.styleable.lsVideoEditer_rightBottomIconWidth,20);
-        float rightBottomIconHeight=typedArray.getDimension(R.styleable.lsVideoEditer_rightBottomIconHeight,20);
+        rightTopIconWidth =typedArray.getDimension(R.styleable.lsVideoEditer_rightTopIconWidth,defSize);
+        rightTopIconHeight =typedArray.getDimension(R.styleable.lsVideoEditer_rightTopIconHeight,defSize);
 
+        rightBottomIconWidth =typedArray.getDimension(R.styleable.lsVideoEditer_rightBottomIconWidth,defSize);
+        rightBottomIconHeight =typedArray.getDimension(R.styleable.lsVideoEditer_rightBottomIconHeight,defSize);
+
+        hotSize = typedArray.getDimension(R.styleable.lsVideoEditer_iconHotSize,50);
+
+        clickGestureSize = typedArray.getDimension(R.styleable.lsVideoEditer_clickGestureSize,10);
 
         int leftTopIconIconId=typedArray.getResourceId(R.styleable.lsVideoEditer_leftTopIcon,0);
-
         int leftBottomIconId=typedArray.getResourceId(R.styleable.lsVideoEditer_leftBottomIcon,0);
-
         int rightTopIconId=typedArray.getResourceId(R.styleable.lsVideoEditer_rightTopIcon,0);
-
         int rightBottomIconId=typedArray.getResourceId(R.styleable.lsVideoEditer_rightBottomIcon,0);
 
-
         if(leftTopIconIconId!=0){
-            leftTopIcon=BitmapFactory.decodeResource(getResources(),leftTopIconIconId);
+            leftTopIcon=getBitmap(context,leftTopIconIconId);
         }
         if(leftBottomIconId!=0){
-            leftBottomIcon=BitmapFactory.decodeResource(getResources(),leftBottomIconId);
+            leftBottomIcon=getBitmap(context,leftBottomIconId);
+        }
+        if(rightTopIconId!=0){
+            rightTopIcon=getBitmap(context,rightTopIconId);
+        }
+        if(rightBottomIconId!=0){
+            rightBottomIcon=getBitmap(context,rightBottomIconId);
         }
 
     }
 
+    private static Bitmap getBitmap(Context context, int vectorDrawableId) {
+        Bitmap bitmap ;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {//vector不能直接使用decodeResource
+            Drawable vectorDrawable = context.getDrawable(vectorDrawableId);
+            bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                    vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            vectorDrawable.draw(canvas);
+        } else {
+            bitmap = BitmapFactory.decodeResource(context.getResources(), vectorDrawableId);
+        }
+        return bitmap;
+    }
 
+
+
+    //初始化
     private void init(){
-
-
         resBitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.icon_test);
 
         list.add(Item.createItem(0,0,resBitmap.getWidth(),resBitmap.getHeight()));
         list.add(Item.createItem(200,200,200+resBitmap.getWidth(),200+resBitmap.getHeight()));
     }
 
+
+
+
     private Bitmap resBitmap;//可以拖动的bitmap
 
+    private float hotSize=50;//热点区域的大小
 
-    private final int hotSize=100;//热点区域的大小
+    private float clickGestureSize=10;//touch判断是否是点击时候，down的x,y和up时xy的距离，如果在这个距离之下，则认为click，便会回调click事件
 
-    private float touchX=100;//touch的x轴
-    private float touchY=100;//touch的y轴的位置
+    private float touchX=0;//touch的x轴
+    private float touchY=0;//touch的y轴的位置
 
+    private float touchDownX=0;
+    private float touchDownY=0;
 
     private Bitmap leftTopIcon;//左上角的图标
     private Bitmap rightTopIcon;//右上角的图标
     private Bitmap leftBottomIcon;//左下角的图标
     private Bitmap rightBottomIcon;//右下角的图标
 
-
     private int vWidth;
     private int vHeight;
 
-
-
     //存放bitmap的信息
     private List<Item> list=new ArrayList<>();
-
-
 
 
     @Override
@@ -130,21 +160,41 @@ public class LsVideoEditer extends View {
                 float blX=tw/resBitmap.getWidth();
                 float blY=th/resBitmap.getHeight();
 
-
                 if(item.isFlip()){
                     matrix.postScale(-1,1,resBitmap.getWidth()/2,resBitmap.getHeight()/2);
                 }else{
                     matrix.postScale(blX,blY);
                 }
 
-
                 matrix.postTranslate(item.rectF.left,item.rectF.top);
                 canvas.drawBitmap(resBitmap,matrix,paint);
+
+                drawIcon(canvas,leftTopIcon,paint,item.rectF.left,item.rectF.top,leftTopIconWidth,leftTopIconHeight);
+                drawIcon(canvas,leftBottomIcon,paint,item.rectF.left,item.rectF.bottom,leftBottomIconWidth,leftBottomIconHeight);
+                drawIcon(canvas,rightBottomIcon,paint,item.rectF.right,item.rectF.bottom,rightBottomIconWidth,rightBottomIconHeight);
+                drawIcon(canvas,rightTopIcon,paint,item.rectF.right,item.rectF.top,rightTopIconWidth,rightTopIconHeight);
+
             }
         }
-
     }
 
+
+    private void drawIcon(Canvas canvas,Bitmap bitmap,Paint paint,float centX,float centY,float width,float height){
+        if(bitmap==null){
+            return;
+        }
+
+        Rect srcLeftTopIcon=new Rect(0,0,leftTopIcon.getWidth(),leftTopIcon.getHeight());
+
+        int l= (int) (centX-width/2);
+        int t= (int) (centY-height/2);
+        int r= (int) (l+width);
+        int b= (int) (t+height);
+
+        Rect rectLeftTopIcon=new Rect(l,t,r,b);
+
+        canvas.drawBitmap(bitmap,srcLeftTopIcon,rectLeftTopIcon,paint);
+    }
 
 
 
@@ -162,25 +212,32 @@ public class LsVideoEditer extends View {
         int action=event.getAction();
 
         if(action==MotionEvent.ACTION_DOWN){
+            touchDownX=event.getX();
+            touchDownY=event.getY();
+
             selectedItem=null;
             boolean isSelected=false;
             for(int i=list.size()-1;i>=0;i--){
                 Item item=list.get(i);
                 RectF rectF=item.getRectF();
-                if(!isSelected&&touchX>rectF.left&&touchX<rectF.right&&touchY>rectF.top&&touchY<rectF.bottom){
+                if(!isSelected&&touchX>rectF.left-hotSize&&touchX<rectF.right+hotSize&&touchY>rectF.top-hotSize&&touchY<rectF.bottom+hotSize){
                     //表明touch的点已经在该图片里面了，下面判断是否是在左下角和右下角，当在左下角和右下角时候，不能被拖动
+
+                    if(rightBottomIcon!=null && touchX>(rectF.right-hotSize)&&touchY>(rectF.bottom-hotSize)){
+                        item.setType(1);//缩放
+                    }else if(leftBottomIcon!=null && touchX<(rectF.left+hotSize)&&touchY>(rectF.bottom-hotSize)){
+                        item.setType(2);//翻转
+                    }else if(rightTopIcon!=null && touchX>(rectF.right-hotSize)&&touchY<(rectF.top+hotSize)){
+                        item.setType(3);//删除
+                    }else if(touchX>rectF.left&&touchX<rectF.right&&touchY>rectF.top&&touchY<rectF.bottom){//如果移动的话还要不算热区
+                        item.setType(0);//移动
+                    }else{//表示按在热区外
+                        continue;
+                    }
+
                     item.setSelected(true);
                     isSelected=true;
 
-                    if(touchX>(rectF.right-hotSize)&&touchY>(rectF.bottom-hotSize)){
-                        item.setType(1);//缩放
-                    }else if(touchX<(rectF.left+hotSize)&&touchY>(rectF.bottom-hotSize)){
-                        item.setType(2);//翻转
-                    }else if(touchX>(rectF.right-hotSize)&&touchY<(rectF.top+hotSize)){
-                        item.setType(3);//删除
-                    }else{
-                        item.setType(0);//移动
-                    }
                     //表示按住了右下角
                     item.setLeftDistance(touchX-rectF.left);
                     item.setTopDistance(touchY-rectF.top);
@@ -190,8 +247,21 @@ public class LsVideoEditer extends View {
                     item.setSelected(false);
                 }
             }
-        }else if(action==MotionEvent.ACTION_UP){
-        }else if(action==MotionEvent.ACTION_CANCEL){
+        }else if(action==MotionEvent.ACTION_UP||action==MotionEvent.ACTION_CANCEL){//离手
+            if(Math.abs(touchDownX-touchX)<clickGestureSize&&Math.abs(touchDownY-touchY)<clickGestureSize){//点击手势判断成功
+                for(Item item:list){//循环便利，是否有选中的item
+                    if(item.isSelected()){//选中了
+                        int type=item.getType();
+                        if(type==2){//点击了翻转
+                            onItemFlipClick(item);
+                        }else if(type==3){//点击了删除
+                            onItemDelteLick(item);
+                        }
+                    }
+
+                }
+            }
+
         }else if(MotionEvent.ACTION_MOVE==action){
             if(selectedItem!=null){
                 if(selectedItem.getType()==0){//移动
@@ -226,6 +296,14 @@ public class LsVideoEditer extends View {
     }
 
 
+    //点击了右上角删除
+    private void onItemDelteLick(Item item){
+        Log.d("dddd","点击了删除");
+    }
+    ///点击了左下角翻转
+    private void onItemFlipClick(Item item){
+        Log.d("dddd","点击了翻转");
+    }
 
 
 

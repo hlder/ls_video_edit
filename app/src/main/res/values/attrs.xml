@@ -13,6 +13,11 @@
         <attr name="rightBottomIconWidth" format="dimension" />
         <attr name="rightBottomIconHeight" format="dimension" />
 
+        <!-- touch的热区范围，四个脚的角标，触点的大小,默认为50px -->
+        <attr name="iconHotSize" format="dimension"/>
+
+        <!--  touch判断是否是点击时候，down的x,y和up时xy的距离，如果在这个距离之下，则认为click，便会回调click事件,默认为10px -->
+        <attr name="clickGestureSize" format="dimension"/>
 
         <attr name="leftTopIcon" format="reference"/>
         <attr name="leftBottomIcon" format="reference"/>

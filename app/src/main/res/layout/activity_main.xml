@@ -23,7 +23,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button2"
         android:background="@android:color/holo_red_dark" />
 
-
+    
 
     <Button
         android:id="@+id/button2"

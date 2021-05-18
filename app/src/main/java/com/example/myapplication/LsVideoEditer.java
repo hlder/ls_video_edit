@@ -89,6 +89,7 @@ public class LsVideoEditer extends View {
             rightBottomIcon=getBitmap(context,rightBottomIconId);
         }
 
+        typedArray.recycle();
     }
 
     private static Bitmap getBitmap(Context context, int vectorDrawableId) {

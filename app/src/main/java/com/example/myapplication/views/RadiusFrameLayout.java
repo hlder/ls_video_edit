@@ -2,9 +2,10 @@ package com.example.myapplication.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+
+import androidx.annotation.Nullable;
 
 public class RadiusFrameLayout extends FrameLayout {
     private final RadiusHandler radiusHandler;

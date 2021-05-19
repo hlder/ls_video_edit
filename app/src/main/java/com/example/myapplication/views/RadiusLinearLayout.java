@@ -2,9 +2,10 @@ package com.example.myapplication.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
 
 public class RadiusLinearLayout extends LinearLayout {
     private final RadiusHandler radiusHandler;

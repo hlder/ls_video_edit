@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.graphics.Bitmap;
+import android.media.MediaCodec;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         imageView=findViewById(R.id.imageView);
+
 
 
         String absolutePath=getExternalFilesDir("files").getAbsolutePath();

@@ -8,7 +8,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.myapplication"
+        applicationId "com.aliyun.ai.viapi"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
